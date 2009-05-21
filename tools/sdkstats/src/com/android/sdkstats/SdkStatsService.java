@@ -102,6 +102,11 @@ public class SdkStatsService {
 
 
     private static PreferenceStore sPrefStore;
+    
+    public static void ping(final String app, final String version) {
+		System.err.println("Calling ping() wihtout third argument is deprecated!");
+		ping ( app, version, null );
+    }
 
     /**
      * Send a "ping" to the Google toolbar server, if enough time has
