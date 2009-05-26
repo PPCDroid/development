@@ -59,6 +59,7 @@ public final class DdmsPlugin extends AbstractUIPlugin implements IDeviceChangeL
     public static final String PLUGIN_ID = "com.android.ide.eclipse.ddms"; // $NON-NLS-1$
 
     private static final String ADB_LOCATION = PLUGIN_ID + ".adb"; // $NON-NLS-1$
+    private static final String ADBHOST_LOCATION = PLUGIN_ID + ".adbHost"; //$NON-NLS-1
 
     /** The singleton instance */
     private static DdmsPlugin sPlugin;
@@ -71,7 +72,9 @@ public final class DdmsPlugin extends AbstractUIPlugin implements IDeviceChangeL
      */
     private static IDebugLauncher sRunningAppDebugLauncher;
 
-	private static String sAdbHost;
+	private static String sAdbHost = null;
+
+	private static boolean sAdbChanged;
 
     /** Console for DDMS log message */
     private MessageConsole mDdmsConsole;
@@ -220,6 +223,7 @@ public final class DdmsPlugin extends AbstractUIPlugin implements IDeviceChangeL
         // read the adb location from the prefs to attempt to start it properly without
         // having to wait for ADT to start
         sAdbLocation = eclipseStore.getString(ADB_LOCATION);
+        sAdbHost = eclipseStore.getString(ADBHOST_LOCATION);
 
         // start it in a thread to return from start() asap.
         new Thread() {
@@ -229,7 +233,7 @@ public final class DdmsPlugin extends AbstractUIPlugin implements IDeviceChangeL
                 getDefault().initDdmlib();
 
                 // create and start the first bridge
-                AndroidDebugBridge.createBridge(sAdbLocation, true /* forceNewBridge */);
+                AndroidDebugBridge.createBridge(sAdbLocation, sAdbHost, true /* forceNewBridge */);
             }
         }.start();
     }
@@ -291,11 +295,17 @@ public final class DdmsPlugin extends AbstractUIPlugin implements IDeviceChangeL
      * @param startAdb flag to start adb
      */
     public static void setAdb(String adb, final String host, boolean startAdb) {
+    	sAdbChanged = false;
+    	
+    	sAdbChanged = sAdbLocation == null || !sAdbLocation.equals(adb) || 
+    					(sAdbHost != null && !sAdbHost.equals(host)) ||
+    					(sAdbHost == null && host != null );
         sAdbLocation = adb;
         sAdbHost = host;
 
         // store the location for future ddms only start.
         sPlugin.getPreferenceStore().setValue(ADB_LOCATION, sAdbLocation);
+        sPlugin.getPreferenceStore().setValue(ADBHOST_LOCATION, sAdbHost);
 
         // starts the server in a thread in case this is blocking.
         if (startAdb) {
@@ -308,7 +318,7 @@ public final class DdmsPlugin extends AbstractUIPlugin implements IDeviceChangeL
                     getDefault().initDdmlib();
 
 					// create and start the bridge
-                    AndroidDebugBridge.createBridge(sAdbLocation, sAdbHost, false /* forceNewBridge */);
+                    AndroidDebugBridge.createBridge(sAdbLocation, sAdbHost, sAdbChanged /* forceNewBridge */);
                 }
             }.start();
         }
