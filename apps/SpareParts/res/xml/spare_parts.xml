@@ -21,6 +21,7 @@
     <PreferenceCategory
         android:title="@string/device_info_title">
 
+<!--
         <PreferenceScreen android:key="battery_history_settings"
                 android:title="@string/title_battery_history" 
                 android:summary="@string/summary_battery_history">
@@ -36,6 +37,7 @@
                     android:targetPackage="com.android.settings"
                     android:targetClass="com.android.settings.BatteryInfo" />
         </PreferenceScreen>
+-->
         
         <PreferenceScreen android:key="usage_statistics_settings"
                 android:title="@string/title_usage_statistics" 
