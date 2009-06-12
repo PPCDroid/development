@@ -73,12 +73,14 @@
             android:title="@string/title_fancy_ime_animations" 
             android:summaryOn="@string/summary_on_fancy_ime_animations"
             android:summaryOff="@string/summary_off_fancy_ime_animations"/>
-        
+
+<!--
         <CheckBoxPreference 
             android:key="fancy_rotation_animations" 
             android:title="@string/title_fancy_rotation_animations" 
             android:summaryOn="@string/summary_on_fancy_rotation_animations"
             android:summaryOff="@string/summary_off_fancy_rotation_animations"/>
+-->
         
         <ListPreference
                 android:key="font_size"
@@ -87,7 +89,7 @@
                 android:entries="@array/entries_font_size"
                 android:entryValues="@array/entryvalues_font_size"
                 android:dialogTitle="@string/dialog_title_font_size" />
-        
+<!--
         <ListPreference
                 android:key="end_button"
                 android:title="@string/title_end_button"
@@ -101,7 +103,7 @@
             android:title="@string/title_haptic_feedback" 
             android:summaryOn="@string/summary_on_haptic_feedback"
             android:summaryOff="@string/summary_off_haptic_feedback"/>
-        
+-->
     </PreferenceCategory>
             
     <PreferenceCategory
