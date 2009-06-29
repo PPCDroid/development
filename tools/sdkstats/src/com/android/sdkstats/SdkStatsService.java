@@ -232,8 +232,13 @@ public class SdkStatsService {
      * @param id of the local installation
      * @throws IOException if the ping failed
      */
-    @SuppressWarnings("deprecation")
     private static void actuallySendPing(String app, String version, long id)
+        throws IOException {
+	/*NS: Actually do nothing...*/
+	return;
+    }
+    @SuppressWarnings("deprecation")
+    private static void actuallyActuallySendPing(String app, String version, long id)
         throws IOException {
         // Detect and report the host OS.
         String os = System.getProperty("os.name");          // $NON-NLS-1$
