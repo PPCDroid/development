@@ -66,7 +66,7 @@ public class MediaPlayerDemo_Video extends Activity implements
                     /*
                      * TODO: Set the path variable to a local media file path.
                      */
-                    path = "";
+                    path = "/sdcard/video_sample1.m4v";
                     if (path == "") {
                         // Tell the user to provide a media file URL.
                         Toast
@@ -89,7 +89,7 @@ public class MediaPlayerDemo_Video extends Activity implements
                      * reasonably interleaved.
                      * 
                      */
-                    path = "";
+                    path = "rtsp://rtsp-youtube.l.google.com/CkYLENy73wIaPQkDbxksFKm57RMYDSANFEIJbXYtZ29vZ2xlSARSBWluZGV4Wg5DbGlja1RodW1ibmFpbGCH5oiG8oKIj0kM/0/0/0/30/video.3gp";
                     if (path == "") {
                         // Tell the user to provide a media file URL.
                         Toast

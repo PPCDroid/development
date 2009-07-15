@@ -3,6 +3,7 @@ package com.example.android.apis.media;
 import android.app.Activity;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.SystemProperties;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,7 +39,7 @@ public class MediaPlayerDemo_Audio extends Activity {
                     /**
                      * TODO: Set the path variable to a local audio file path.
                      */
-                    path = "";
+                    path = "/sdcard/audio_sample.mp3";
                     if (path == "") {
                         // Tell the user to provide an audio file URL.
                         Toast

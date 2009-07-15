@@ -485,12 +485,14 @@
 
         <!-- Voice Recognition Samples -->
 
+        <!--
         <activity android:name=".app.VoiceRecognition" android:label="@string/voice_recognition">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.SAMPLE_CODE" />
             </intent-filter>
         </activity>
+        -->
 
         <!-- ************************************* -->
         <!--        CONTENT PACKAGE SAMPLES        -->
@@ -523,6 +525,7 @@
         <!--     OS PACKAGE SAMPLES                -->
         <!-- ************************************* -->
 
+        <!--
         <activity android:name=".os.MorseCode" android:label="OS/Morse Code">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -536,6 +539,7 @@
                 <category android:name="android.intent.category.SAMPLE_CODE" />
             </intent-filter>
         </activity>
+        -->
 
         <!-- ************************************* -->
         <!--     ANIMATION PACKAGE SAMPLES         -->
@@ -1322,6 +1326,7 @@
             </intent-filter>
         </activity>
 
+        <!--
         <activity android:name=".graphics.Compass" android:label="Graphics/Compass">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -1329,12 +1334,14 @@
             </intent-filter>
         </activity>
 
+
         <activity android:name=".graphics.CameraPreview" android:label="Graphics/CameraPreview" android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.SAMPLE_CODE" />
             </intent-filter>
         </activity>
+        -->       
 
         <activity android:name=".graphics.GLSurfaceViewActivity"
                 android:label="Graphics/OpenGL ES/GLSurfaceView"
@@ -1492,12 +1499,14 @@
             </intent-filter>
         </activity>
 
+        <!--
         <activity android:name=".graphics.SensorTest" android:label="Graphics/SensorTest">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.SAMPLE_CODE" />
             </intent-filter>
         </activity>
+        -->
 
         <activity android:name=".graphics.AlphaBitmap" android:label="Graphics/AlphaBitmap">
             <intent-filter>
