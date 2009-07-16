@@ -3,7 +3,6 @@ package com.example.android.apis.media;
 import android.app.Activity;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.SystemProperties;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
