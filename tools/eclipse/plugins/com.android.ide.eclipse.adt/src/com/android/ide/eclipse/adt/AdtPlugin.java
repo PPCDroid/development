@@ -1030,7 +1030,10 @@ public class AdtPlugin extends AbstractUIPlugin {
         // check the path to various tools we use
         String[] filesToCheck = new String[] {
                 osSdkLocation + getOsRelativeAdb(),
-                osSdkLocation + getOsRelativeEmulator()
+                /*NS: had to disable it in order to be able to  
+                 * use ADT with  SDK's that works only with real hardware 
+                 */
+                //osSdkLocation + getOsRelativeEmulator()
         };
         for (String file : filesToCheck) {
             if (checkFile(file) == false) {
