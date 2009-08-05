@@ -140,7 +140,7 @@ bin/emulator tools/emulator
 system.img platforms/${PLATFORM_NAME}/images/system.img
 ramdisk.img platforms/${PLATFORM_NAME}/images/ramdisk.img
 userdata.img platforms/${PLATFORM_NAME}/images/userdata.img
-prebuilt/android-arm/kernel/kernel-qemu platforms/${PLATFORM_NAME}/images/kernel-qemu
+prebuilt/android-${TARGET_ARCH}/kernel/kernel-qemu platforms/${PLATFORM_NAME}/images/kernel-qemu
 external/qemu/android/avd/hardware-properties.ini tools/lib/hardware-properties.ini
 
 # emulator skins
