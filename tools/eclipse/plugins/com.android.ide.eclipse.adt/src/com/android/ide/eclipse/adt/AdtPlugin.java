@@ -101,6 +101,8 @@ import org.osgi.framework.Version;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -132,6 +134,10 @@ public class AdtPlugin extends AbstractUIPlugin {
     public final static String PREFS_HOME_PACKAGE = PLUGIN_ID + ".homePackage"; //$NON-NLS-1$
 
     public final static String PREFS_EMU_OPTIONS = PLUGIN_ID + ".emuOptions"; //$NON-NLS-1$
+    
+    public final static String EA_DROID_SDK_LOCATION = "/opt/embeddedalley/droid/";
+
+    public final static String EA_SDK_LOCATION_PREFIX = "/opt/embeddedalley/android/sdk/";
 
     /** singleton instance */
     private static AdtPlugin sPlugin;
@@ -239,6 +245,56 @@ public class AdtPlugin extends AbstractUIPlugin {
     public AdtPlugin() {
         sPlugin = this;
     }
+    
+    private void searchForSDK() {
+
+    	/* Search for Android SDKs in /opt/embeddedalley/android/sdk directory*/
+    	File eaSdkPrefixDir = new File(EA_SDK_LOCATION_PREFIX);
+    	if (eaSdkPrefixDir.exists() && eaSdkPrefixDir.isDirectory()) {
+    		for(File subdir:eaSdkPrefixDir.listFiles(new FileFilter() {
+
+				public boolean accept(File dir) {
+					return 	dir.isDirectory() &&
+							dir.canRead() && 
+							(!dir.getName().startsWith("."));
+				}
+    			
+    		})) {
+    			String path = subdir.getAbsolutePath();
+    			if (checkSdkLocationAndIdSilent(path)) {
+    	    		mOsSdkLocation = path;
+    	    		mStore.setValue(PREFS_SDK_DIR, path);
+    				return;
+    			}
+    		}
+    		
+    		
+    	}
+    	
+    	/* Search for SDK in /opt/embeddedalley/droid directory*/
+    	if ( checkSdkLocationAndIdSilent(EA_DROID_SDK_LOCATION) ) {
+    		mOsSdkLocation = EA_DROID_SDK_LOCATION;
+    		mStore.setValue(PREFS_SDK_DIR, EA_DROID_SDK_LOCATION);
+    		return;
+    	}
+    	
+    	/* Search for SDK in one's home directory*/
+    	String home = System.getenv("HOME");
+    	File fHandler = new File(home);
+    	String[] dirs = fHandler.list(new FilenameFilter() {
+			public boolean accept(File dir, String name) {
+				return name.startsWith("android-sdk");
+			}
+    	});
+    	for(String dir: dirs) {
+    		dir = home + File.separator + dir;
+    		if ( checkSdkLocationAndIdSilent(dir)) {
+    			mOsSdkLocation = dir;
+    			mStore.setValue(PREFS_SDK_DIR, dir);
+    			return;
+    		}
+    	}
+    }
 
     /*
      * (non-Javadoc)
@@ -288,6 +344,12 @@ public class AdtPlugin extends AbstractUIPlugin {
         // get the eclipse store
         mStore = getPreferenceStore();
 
+
+        mOsSdkLocation = mStore.getString(PREFS_SDK_DIR);
+	/* NS: if not defined auto-search for SDK*/
+	if ( mOsSdkLocation == null || mOsSdkLocation.length() == 0 ) 
+		searchForSDK();
+
         // set the listener for the preference change
         Preferences prefs = getPluginPreferences();
         prefs.addPropertyChangeListener(new IPropertyChangeListener() {
@@ -322,7 +384,6 @@ public class AdtPlugin extends AbstractUIPlugin {
             }
         });
 
-        mOsSdkLocation = mStore.getString(PREFS_SDK_DIR);
 
         // make sure it ends with a separator. Normally this is done when the preference
         // is set. But to make sure older version still work, we fix it here as well.
@@ -888,6 +949,20 @@ public class AdtPlugin extends AbstractUIPlugin {
      * from the SDK.
      * @return false if the location is not correct.
      */
+    private boolean checkSdkLocationAndIdSilent(String location) {
+    	return checkSdkLocationAndId(location, new CheckSdkErrorHandler() {
+			@Override
+			public boolean handleError(String message) {
+				return false;
+			}
+
+			@Override
+			public boolean handleWarning(String message) {
+				return true;
+			}
+    	});
+    	
+    }
     private boolean checkSdkLocationAndId() {
         if (mOsSdkLocation == null || mOsSdkLocation.length() == 0) {
             displayError(Messages.Dialog_Title_SDK_Location, Messages.SDK_Not_Setup);
