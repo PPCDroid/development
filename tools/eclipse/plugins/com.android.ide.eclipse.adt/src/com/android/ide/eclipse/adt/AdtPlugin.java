@@ -1027,18 +1027,28 @@ public class AdtPlugin extends AbstractUIPlugin {
                             SdkConstants.FD_TOOLS, osSdkLocation));
         }
 
+        /*NS: Had to modify structure of checks for adb and emulator*/
         // check the path to various tools we use
-        String[] filesToCheck = new String[] {
-                osSdkLocation + getOsRelativeAdb(),
-                /*NS: had to disable it in order to be able to  
-                 * use ADT with  SDK's that works only with real hardware 
-                 */
-                //osSdkLocation + getOsRelativeEmulator()
-        };
-        for (String file : filesToCheck) {
-            if (checkFile(file) == false) {
-                return errorHandler.handleError(String.format(Messages.Could_Not_Find, file));
-            }
+        //String[] filesToCheck = new String[] {
+        //        osSdkLocation + getOsRelativeAdb(),
+        //        osSdkLocation + getOsRelativeEmulator()
+        //};
+        
+        //for (String file : filesToCheck) {
+        //    if (checkFile(file) == false) {
+        //        return errorHandler.handleError(String.format(Messages.Could_Not_Find, file));
+        //    }
+        //}
+        /*NS: check for adb tool*/
+        String adbPath = osSdkLocation + getOsRelativeAdb();
+        if (checkFile(adbPath) == false) {
+        	return errorHandler.handleError(String.format(Messages.Could_Not_Find, adbPath));
+        }
+
+        /* NS: print a warning if emulator can not be found*/
+        String emulatorPath = osSdkLocation + getOsRelativeEmulator();
+        if (checkFile(emulatorPath) == false) {
+        	errorHandler.handleWarning(String.format(Messages.Could_Not_Find, emulatorPath));
         }
 
         // check the SDK build id/version and the plugin version.
