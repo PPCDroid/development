@@ -71,6 +71,8 @@ public final class DdmsPlugin extends AbstractUIPlugin implements IDeviceChangeL
      */
     private static IDebugLauncher sRunningAppDebugLauncher;
 
+	private static String sAdbHost;
+
     /** Console for DDMS log message */
     private MessageConsole mDdmsConsole;
 
@@ -278,27 +280,35 @@ public final class DdmsPlugin extends AbstractUIPlugin implements IDeviceChangeL
         return sAdbLocation;
     }
 
+    public static void setAdb(String adb, boolean startAdb) {
+    	setAdb(adb,null,startAdb);
+    }
+    
     /**
      * Set the location of the adb executable and optionally starts adb
      * @param adb location of adb
+     * @param host value of ADBHOST environment variable
      * @param startAdb flag to start adb
      */
-    public static void setAdb(String adb, boolean startAdb) {
+    public static void setAdb(String adb, final String host, boolean startAdb) {
         sAdbLocation = adb;
+        sAdbHost = host;
 
         // store the location for future ddms only start.
         sPlugin.getPreferenceStore().setValue(ADB_LOCATION, sAdbLocation);
 
         // starts the server in a thread in case this is blocking.
         if (startAdb) {
+
             new Thread() {
+            	
                 @Override
                 public void run() {
                     // init ddmlib if needed
                     getDefault().initDdmlib();
 
-                    // create and start the bridge
-                    AndroidDebugBridge.createBridge(sAdbLocation, false /* forceNewBridge */);
+					// create and start the bridge
+                    AndroidDebugBridge.createBridge(sAdbLocation, sAdbHost, false /* forceNewBridge */);
                 }
             }.start();
         }

@@ -139,6 +139,8 @@ public class AdtPlugin extends AbstractUIPlugin {
 
     public final static String EA_SDK_LOCATION_PREFIX = "/opt/embeddedalley/android/sdk/";
 
+    public static final String PREFS_ADB_HOST = PLUGIN_ID + ".adbHost"; //$NON-NLS-1$;
+
     /** singleton instance */
     private static AdtPlugin sPlugin;
 
@@ -184,6 +186,8 @@ public class AdtPlugin extends AbstractUIPlugin {
             new ArrayList<ITargetChangeListener>();
 
     protected boolean mSdkIsLoading;
+
+	private String mAdbHost;
 
     /**
      * Custom PrintStream for Dx output. This class overrides the method
@@ -369,7 +373,7 @@ public class AdtPlugin extends AbstractUIPlugin {
                     }
 
                     // finally restart adb, in case it's a different version
-                    DdmsPlugin.setAdb(getOsAbsoluteAdb(), true /* startAdb */);
+                    DdmsPlugin.setAdb(getOsAbsoluteAdb(), getAdbHost(), true /* startAdb */);
 
                     // get the SDK location and build id.
                     if (checkSdkLocationAndId()) {
@@ -402,7 +406,7 @@ public class AdtPlugin extends AbstractUIPlugin {
 
         // start the DdmsPlugin by setting the adb location, only if it is set already.
         if (mOsSdkLocation.length() > 0) {
-            DdmsPlugin.setAdb(getOsAbsoluteAdb(), true);
+            DdmsPlugin.setAdb(getOsAbsoluteAdb(), getAdbHost(), true);
         }
 
         // and give it the debug launcher for android projects
@@ -467,7 +471,8 @@ public class AdtPlugin extends AbstractUIPlugin {
         pingJob.schedule(2000 /*milliseconds*/);
     }
 
-    /*
+
+	/*
      * (non-Javadoc)
      *
      * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
@@ -561,6 +566,17 @@ public class AdtPlugin extends AbstractUIPlugin {
         }
         return sPlugin.mOsSdkLocation;
     }
+    private static String getAdbHost() {
+        if (sPlugin == null) {
+            return null;
+        }
+
+        if (sPlugin.mAdbHost == null) {
+            sPlugin.mAdbHost = sPlugin.mStore.getString(PREFS_ADB_HOST);
+        }
+        return sPlugin.mAdbHost;
+	}
+
 
     public static String getOsSdkToolsFolder() {
         return getOsSdkFolder() + SdkConstants.OS_SDK_TOOLS_FOLDER;

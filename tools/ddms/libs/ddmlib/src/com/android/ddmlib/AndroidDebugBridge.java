@@ -27,6 +27,8 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -55,6 +57,8 @@ public final class AndroidDebugBridge {
     // Where to find the ADB bridge.
     final static String ADB_HOST = "127.0.0.1"; //$NON-NLS-1$
     final static int ADB_PORT = 5037;
+    
+    final static String ADBHOST_ENV="ADBHOST";
 
     static InetAddress sHostAddr;
     static InetSocketAddress sSocketAddr;
@@ -74,6 +78,9 @@ public final class AndroidDebugBridge {
 
     /** Full path to adb. */
     private String mAdbOsLocation = null;
+    
+    /** ADB Host IP */
+    private String mAdbHostIP = null;
 
     private boolean mVersionCheck;
 
@@ -155,6 +162,22 @@ public final class AndroidDebugBridge {
          * {@link Client#CHANGE_HEAP_DATA}, {@link Client#CHANGE_NATIVE_HEAP_DATA}
          */
         public void clientChanged(Client client, int changeMask);
+    }
+    
+    private Process doExec(String[] command) throws IOException {
+    	if (mAdbHostIP == null || mAdbHostIP.length() == 0 ) 
+        	return Runtime.getRuntime().exec(command);
+    		
+    	Map<String, String> env = System.getenv();
+    	ArrayList<String> envp = new ArrayList<String>();
+    	for(Entry<String, String> entry: env.entrySet()) {
+    		if (entry.getKey().equals(ADBHOST_ENV))
+    			continue;
+    		envp.add(entry.getKey()+"="+entry.getValue());
+    	}
+    	envp.add(ADBHOST_ENV+"="+mAdbHostIP);
+    	
+    	return Runtime.getRuntime().exec(command, envp.toArray(new String[env.size()]));
     }
 
     /**
@@ -271,14 +294,20 @@ public final class AndroidDebugBridge {
      * Any existing server will be disconnected, unless the location is the same and
      * <code>forceNewBridge</code> is set to false.
      * @param osLocation the location of the command line tool 'adb'
+     * @param hostIP the value that ADBHOST variable should be set to
      * @param forceNewBridge force creation of a new bridge even if one with the same location
      * already exists.
      * @return a connected bridge.
      */
     public static AndroidDebugBridge createBridge(String osLocation, boolean forceNewBridge) {
+    	return createBridge(osLocation, null, forceNewBridge);
+    }
+    public static AndroidDebugBridge createBridge(String osLocation, String hostIP, boolean forceNewBridge) {
         synchronized (sLock) {
             if (sThis != null) {
                 if (sThis.mAdbOsLocation != null && sThis.mAdbOsLocation.equals(osLocation) &&
+                		( 		(sThis.mAdbHostIP == null && hostIP == null) || 
+                				(sThis.mAdbHostIP != null && sThis.mAdbHostIP.equals(hostIP)) ) &&
                         forceNewBridge == false) {
                     return sThis;
                 } else {
@@ -288,7 +317,7 @@ public final class AndroidDebugBridge {
             }
 
             try {
-                sThis = new AndroidDebugBridge(osLocation);
+                sThis = new AndroidDebugBridge(osLocation, hostIP);
                 sThis.start();
             } catch (InvalidParameterException e) {
                 sThis = null;
@@ -522,11 +551,12 @@ public final class AndroidDebugBridge {
      * @param osLocation the location of the command line tool
      * @throws InvalidParameterException
      */
-    private AndroidDebugBridge(String osLocation) throws InvalidParameterException {
+    private AndroidDebugBridge(String osLocation, String hostIP) throws InvalidParameterException {
         if (osLocation == null || osLocation.length() == 0) {
             throw new InvalidParameterException();
         }
         mAdbOsLocation = osLocation;
+        mAdbHostIP = hostIP;
 
         checkAdbVersion();
     }
@@ -554,7 +584,7 @@ public final class AndroidDebugBridge {
             command[0] = mAdbOsLocation;
             command[1] = "version"; //$NON-NLS-1$
             Log.d(DDMS, String.format("Checking '%1$s version'", mAdbOsLocation)); //$NON-NLS-1$
-            Process process = Runtime.getRuntime().exec(command);
+            Process process = doExec(command);
 
             ArrayList<String> errorOutput = new ArrayList<String>();
             ArrayList<String> stdOutput = new ArrayList<String>();
@@ -892,7 +922,7 @@ public final class AndroidDebugBridge {
             Log.d(DDMS,
                     String.format("Launching '%1$s %2$s' to ensure ADB is running.", //$NON-NLS-1$
                     mAdbOsLocation, command[1]));
-            proc = Runtime.getRuntime().exec(command);
+            proc = doExec(command);
 
             ArrayList<String> errorOutput = new ArrayList<String>();
             ArrayList<String> stdOutput = new ArrayList<String>();

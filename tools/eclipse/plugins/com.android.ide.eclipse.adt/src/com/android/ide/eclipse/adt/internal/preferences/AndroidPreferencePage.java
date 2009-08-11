@@ -24,6 +24,7 @@ import com.android.sdkuilib.internal.widgets.SdkTargetSelector;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
+import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
@@ -51,6 +52,7 @@ public class AndroidPreferencePage extends FieldEditorPreferencePage implements
         IWorkbenchPreferencePage {
 
     private SdkDirectoryFieldEditor mDirectoryField;
+	private StringFieldEditor mAdbHostField;
 
     public AndroidPreferencePage() {
         super(GRID);
@@ -68,8 +70,10 @@ public class AndroidPreferencePage extends FieldEditorPreferencePage implements
 
         mDirectoryField = new SdkDirectoryFieldEditor(AdtPlugin.PREFS_SDK_DIR,
                 Messages.AndroidPreferencePage_SDK_Location_, getFieldEditorParent());
-
+        
+        mAdbHostField = new StringFieldEditor(AdtPlugin.PREFS_ADB_HOST, "ABDHOST IP", getFieldEditorParent());
         addField(mDirectoryField);
+        addField(mAdbHostField);
     }
 
     /*
