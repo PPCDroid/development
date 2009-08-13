@@ -570,39 +570,36 @@ public final class AndroidLaunchController implements IDebugBridgeChangeListener
 
         // Since this is called from the UI thread we spawn a new thread
         // to finish the launch.
-        new Thread() {
-            @Override
-            public void run() {
-                if (response.getAvdToLaunch() != null) {
-                    // there was no selected device, we start a new emulator.
-                    synchronized (sListLock) {
-                        AvdInfo info = response.getAvdToLaunch();
-                        mWaitingForEmulatorLaunches.add(launchInfo);
-                        AdtPlugin.printToConsole(project, String.format(
-                                "Launching a new emulator with Virtual Device '%1$s'",
-                                info.getName()));
-                        boolean status = launchEmulator(config, info);
+    	// NS: This is no longer true
+    	// It should be executed in the same thread
+    	if (response.getAvdToLaunch() != null) {
+    		// there was no selected device, we start a new emulator.
+    		synchronized (sListLock) {
+    			AvdInfo info = response.getAvdToLaunch();
+    			mWaitingForEmulatorLaunches.add(launchInfo);
+    			AdtPlugin.printToConsole(project, String.format(
+    					"Launching a new emulator with Virtual Device '%1$s'",
+    					info.getName()));
+    			boolean status = launchEmulator(config, info);
 
-                        if (status == false) {
-                            // launching the emulator failed!
-                            AdtPlugin.displayError("Emulator Launch",
-                                    "Couldn't launch the emulator! Make sure the SDK directory is properly setup and the emulator is not missing.");
+    			if (status == false) {
+    				// launching the emulator failed!
+    				AdtPlugin.displayError("Emulator Launch",
+    				"Couldn't launch the emulator! Make sure the SDK directory is properly setup and the emulator is not missing.");
 
-                            // stop the launch and return
-                            mWaitingForEmulatorLaunches.remove(launchInfo);
-                            AdtPlugin.printErrorToConsole(project, "Launch canceled!");
-                            stopLaunch(launchInfo);
-                            return;
-                        }
+    				// stop the launch and return
+    				mWaitingForEmulatorLaunches.remove(launchInfo);
+    				AdtPlugin.printErrorToConsole(project, "Launch canceled!");
+    				stopLaunch(launchInfo);
+    				return;
+    			}
 
-                        return;
-                    }
-                } else if (response.getDeviceToUse() != null) {
-                    launchInfo.setDevice(response.getDeviceToUse());
-                    simpleLaunch(launchInfo, launchInfo.getDevice());
-                }
-            }
-        }.start();
+    			return;
+    		}
+    	} else if (response.getDeviceToUse() != null) {
+    		launchInfo.setDevice(response.getDeviceToUse());
+    		simpleLaunch(launchInfo, launchInfo.getDevice());
+    	}
     }
 
     /**
