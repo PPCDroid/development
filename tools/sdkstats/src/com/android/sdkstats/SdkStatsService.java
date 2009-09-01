@@ -125,7 +125,9 @@ public class SdkStatsService {
                 prefs.setValue(PING_ID, new Random().nextLong());
     
                 // Also give them a chance to opt out.
-                prefs.setValue(PING_OPT_IN, getUserPermission(display));
+		//NS: Do not show any dialog and by default disable statistic gathering
+                //prefs.setValue(PING_OPT_IN, getUserPermission(display));
+                prefs.setValue(PING_OPT_IN, false);
                 try {
                     prefs.save();
                 }
