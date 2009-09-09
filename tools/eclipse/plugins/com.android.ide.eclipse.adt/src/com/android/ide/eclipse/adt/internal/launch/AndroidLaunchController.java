@@ -282,7 +282,7 @@ public final class AndroidLaunchController implements IDebugBridgeChangeListener
     public void launch(final IProject project, String mode, IFile apk,
             String packageName, String debugPackageName, Boolean debuggable,
             String requiredApiVersionNumber, final IAndroidLaunchAction launchAction,
-            final AndroidLaunchConfiguration config, final AndroidLaunch launch,
+            final AndroidLaunchConfiguration config, final AndroidLaunch launch, int gdbPort,
             IProgressMonitor monitor) {
 
         String message = String.format("Performing %1$s", launchAction.getLaunchDescription());
@@ -295,6 +295,9 @@ public final class AndroidLaunchController implements IDebugBridgeChangeListener
 
         // set the debug mode
         launchInfo.setDebugMode(mode.equals(ILaunchManager.DEBUG_MODE));
+        
+        // set gdbserver port
+        launchInfo.setGDBPort(gdbPort);
 
         // get the SDK
         Sdk currentSdk = Sdk.getCurrent();

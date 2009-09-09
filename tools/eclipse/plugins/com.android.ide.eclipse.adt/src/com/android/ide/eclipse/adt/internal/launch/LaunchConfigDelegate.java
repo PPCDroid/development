@@ -242,6 +242,7 @@ public class LaunchConfigDelegate extends LaunchConfigurationDelegate {
             IFile applicationPackage, AndroidManifestParser manifestParser) {
         
        String activityName = null;
+       int gdbPort = -1;
         
         if (config.mLaunchAction == ACTION_ACTIVITY) { 
             // Get the activity name defined in the config
@@ -314,11 +315,16 @@ public class LaunchConfigDelegate extends LaunchConfigurationDelegate {
             launchAction = new ActivityLaunchAction(activityName, controller);
         }
 
+        try {
+			gdbPort = configuration.getAttribute("com.embeddedalley.ide.eclipse.android.ADBLaunchPlugin.gdbPort", -1);
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
         // everything seems fine, we ask the launch controller to handle
         // the rest
         controller.launch(project, mode, applicationPackage,manifestParser.getPackage(),
                 manifestParser.getPackage(), manifestParser.getDebuggable(),
-                manifestParser.getApiLevelRequirement(), launchAction, config, androidLaunch,
+                manifestParser.getApiLevelRequirement(), launchAction, config, androidLaunch, gdbPort,
                 monitor);
     }
     

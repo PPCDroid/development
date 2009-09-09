@@ -63,6 +63,8 @@ public class ActivityLaunchAction implements IAndroidLaunchAction {
             device.executeShellCommand("am start" //$NON-NLS-1$
                     + (info.isDebugMode() ? " -D" //$NON-NLS-1$
                             : "") //$NON-NLS-1$
+                    + (info.getGDBPort()>0? (" -G "+info.getGDBPort()) //$NON-NLS-1$
+                    		: "") //$NON-NLS-1$
                     + " -n " //$NON-NLS-1$
                     + info.getPackageName() + "/" //$NON-NLS-1$
                     + mActivity.replaceAll("\\$", "\\\\\\$"), //$NON-NLS-1$ //$NON-NLS-2$

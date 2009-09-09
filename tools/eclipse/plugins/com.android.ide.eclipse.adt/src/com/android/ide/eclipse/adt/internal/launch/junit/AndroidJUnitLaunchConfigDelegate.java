@@ -88,7 +88,7 @@ public class AndroidJUnitLaunchConfigDelegate extends LaunchConfigDelegate {
         
         controller.launch(project, mode, applicationPackage, testAppPackage, targetAppPackage,
                 manifestParser.getDebuggable(), manifestParser.getApiLevelRequirement(),
-                junitLaunch, config, androidLaunch, monitor);
+                junitLaunch, config, androidLaunch, -1/*gdbPort*/, monitor);
     }
 
     /**

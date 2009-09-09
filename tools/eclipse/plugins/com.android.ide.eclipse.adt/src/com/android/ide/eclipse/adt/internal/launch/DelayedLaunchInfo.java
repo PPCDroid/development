@@ -69,6 +69,9 @@ public final class DelayedLaunchInfo {
 
     /** debug mode flag */
     private boolean mDebugMode;
+    
+    /** gdbserver port */
+    private int mGdbPort;
 
     /** current number of launch attempts */
     private int mAttemptCount = 0;
@@ -101,6 +104,7 @@ public final class DelayedLaunchInfo {
         mMonitor = monitor;
         mDebuggable = debuggable;
         mRequiredApiVersionNumber = requiredApiVersionNumber;
+        mGdbPort = -1;
     }
 
     /**
@@ -210,6 +214,20 @@ public final class DelayedLaunchInfo {
      */
     public boolean isDebugMode() {
         return mDebugMode;
+    }
+    
+    /**
+     * @param gdbPort gdbserver port
+     */
+    public void setGDBPort(int gdbPort) {
+    	this.mGdbPort = gdbPort;
+    }
+    
+    /**
+     *  @return gdbserver port values ( values <= 0 means do not start gdbserver )
+     */
+    public int getGDBPort() {
+    	return mGdbPort;
     }
 
     /**
