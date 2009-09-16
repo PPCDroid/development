@@ -246,6 +246,7 @@ public class SdkStatsService {
 	/*NS: Actually do nothing...*/
 	return;
     }
+
     @SuppressWarnings("deprecation")
     private static void actuallyActuallySendPing(String app, String version, long id)
         throws IOException {
