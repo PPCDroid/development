@@ -1,0 +1,3 @@
+
+# emulator
+prebuilt/android-${TARGET_ARCH}/kernel/openbios-ppc platforms/${PLATFORM_NAME}/images/openbios-ppc
