@@ -34,7 +34,7 @@ bin/mksdcard tools/mksdcard
 bin/zipalign tools/zipalign
 
 # the uper-jar file that apps link against
-out/target/common/obj/PACKAGING/android_jar_intermediates/android.jar platforms/${PLATFORM_NAME}/android.jar
+obj/PACKAGING/android_jar_intermediates/android.jar platforms/${PLATFORM_NAME}/android.jar
 
 # eclipse files for SWT
 framework/org.eclipse.core.commands_3.4.0.I20080509-2000.jar tools/lib/org.eclipse.core.commands_3.4.0.I20080509-2000.jar
