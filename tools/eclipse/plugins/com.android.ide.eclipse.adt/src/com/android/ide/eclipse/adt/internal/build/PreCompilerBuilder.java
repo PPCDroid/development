@@ -599,6 +599,8 @@ public class PreCompilerBuilder extends BaseBuilder {
 
         // remove all the derived resources from the 'gen' source folder.
         removeDerivedResources(mGenFolder, monitor);
+        // NS: but restore gen folder itself
+        mGenFolder.create(true/*force*/, true/*local*/, monitor);
     }
 
     @Override
