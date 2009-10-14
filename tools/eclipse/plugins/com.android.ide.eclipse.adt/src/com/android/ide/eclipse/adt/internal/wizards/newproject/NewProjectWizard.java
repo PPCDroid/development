@@ -670,7 +670,13 @@ public class NewProjectWizard extends Wizard implements INewWizard {
         // Fix the project to make sure all properties are as expected.
         // Necessary for existing projects and good for new ones to.
         ProjectHelper.fixProject(project);
-
+        
+        /* NS: restore gen folder */
+        if (!genSrcFolder.exists()) {
+        	genSrcFolder.create(true/*force*/, true/*local*/, new SubProgressMonitor(monitor,1));
+            genSrcFolder.setDerived(true);
+        }
+        
         return project;
     }
 
