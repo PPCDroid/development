@@ -1,0 +1,3 @@
+
+# Change default skin for MIPS emulator
+development/emulator/skins/mips-default.ini platforms/${PLATFORM_NAME}/skins/default.ini
