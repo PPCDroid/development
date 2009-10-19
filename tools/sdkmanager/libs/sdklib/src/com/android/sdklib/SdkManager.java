@@ -260,7 +260,6 @@ public final class SdkManager {
 
             if (map != null) {
                 // look for some specific values in the map.
-
                 // version string
                 String apiName = map.get(PROP_VERSION_RELEASE);
                 if (apiName == null) {
@@ -325,7 +324,8 @@ public final class SdkManager {
 
                 // need to parse the skins.
                 String[] skins = parseSkinFolder(target.getPath(IAndroidTarget.SKINS));
-                target.setSkins(skins);
+                String defaultSkin  = getDefaultSkin(target.getPath(IAndroidTarget.SKINS));
+                target.setSkins(skins, defaultSkin);
 
                 return target;
             }
@@ -657,5 +657,23 @@ public final class SdkManager {
         }
 
         return new String[0];
+    }
+    /**
+     * Searches for default.ini file in skin folder.
+     * @param osPath The path of the skin root folder.
+     */
+    private String getDefaultSkin(String osPath) {
+	try {
+        	File defaultSkinFile = new File(osPath+File.separator+"default.ini");
+		if (!defaultSkinFile.exists() || !defaultSkinFile.isFile() || !defaultSkinFile.canRead())
+			return "HVGA";
+            	FileInputStream fis = new FileInputStream(defaultSkinFile);
+            	BufferedReader br = new BufferedReader(new InputStreamReader(fis,
+                    SdkConstants.INI_CHARSET));
+		String defaultSkin = br.readLine();
+		br.close();
+		fis.close();
+		return defaultSkin;
+	} catch ( Exception e ) { return "HVGA"; }
     }
 }

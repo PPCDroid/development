@@ -41,8 +41,8 @@ final class PlatformTarget implements IAndroidTarget {
     private final Map<String, String> mProperties;
     private final Map<Integer, String> mPaths = new HashMap<Integer, String>();
     private String[] mSkins;
-
-
+    private String mDefaultSkin;
+    
     PlatformTarget(String location, Map<String, String> properties,
             int apiLevel, String codeName, String versionName, int revision) {
         if (location.endsWith(File.separator) == false) {
@@ -160,7 +160,8 @@ final class PlatformTarget implements IAndroidTarget {
 
     public String getDefaultSkin() {
         // at this time, this is the default skin for all the platform.
-        return "HVGA";
+        //return "HVGA";
+	return mDefaultSkin;
     }
 
     /**
@@ -261,7 +262,12 @@ final class PlatformTarget implements IAndroidTarget {
         return mProperties; // mProperties is unmodifiable.
     }
 
-    void setSkins(String[] skins) {
+    void setSkins(String[] skins, String defaultSkin) {
         mSkins = skins;
+	mDefaultSkin = defaultSkin;
+    }
+
+    void setSkins(String[] skins) {
+        setSkins(skins,"HVGA");
     }
 }
