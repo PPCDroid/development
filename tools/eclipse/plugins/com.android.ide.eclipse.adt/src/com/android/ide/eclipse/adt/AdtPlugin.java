@@ -139,6 +139,8 @@ public class AdtPlugin extends AbstractUIPlugin {
 
     public final static String EA_SDK_LOCATION_PREFIX = "/opt/embeddedalley/android/sdk/";
 
+    public final static String MENTOR_SDK_LOCATION_PREFIX = "/opt/mentor/android/sdk/";
+
     public static final String PREFS_ADB_HOST = PLUGIN_ID + ".adbHost"; //$NON-NLS-1$;
 
     /** singleton instance */
@@ -251,29 +253,13 @@ public class AdtPlugin extends AbstractUIPlugin {
     }
     
     private void searchForSDK() {
-
-    	/* Search for Android SDKs in /opt/embeddedalley/android/sdk directory*/
-    	File eaSdkPrefixDir = new File(EA_SDK_LOCATION_PREFIX);
-    	if (eaSdkPrefixDir.exists() && eaSdkPrefixDir.isDirectory()) {
-    		for(File subdir:eaSdkPrefixDir.listFiles(new FileFilter() {
-
-				public boolean accept(File dir) {
-					return 	dir.isDirectory() &&
-							dir.canRead() && 
-							(!dir.getName().startsWith("."));
-				}
-    			
-    		})) {
-    			String path = subdir.getAbsolutePath();
-    			if (checkSdkLocationAndIdSilent(path)) {
-    	    		mOsSdkLocation = path;
-    	    		mStore.setValue(PREFS_SDK_DIR, path);
-    				return;
-    			}
-    		}
-    		
-    		
-    	}
+    	/* Search for Android SDKs in /opt/mentor/android/sdk directory*/
+    	if (searchForSDKInFolder(MENTOR_SDK_LOCATION_PREFIX))
+    		return;
+    	
+    	/* If not found, fallback to older  /opt/embeddedalley/android/sdk directory*/
+    	if (searchForSDKInFolder(EA_SDK_LOCATION_PREFIX))
+    		return;
     	
     	/* Search for SDK in /opt/embeddedalley/droid directory*/
     	if ( checkSdkLocationAndIdSilent(EA_DROID_SDK_LOCATION) ) {
@@ -290,6 +276,7 @@ public class AdtPlugin extends AbstractUIPlugin {
 				return name.startsWith("android-sdk");
 			}
     	});
+    	
     	for(String dir: dirs) {
     		dir = home + File.separator + dir;
     		if ( checkSdkLocationAndIdSilent(dir)) {
@@ -298,6 +285,35 @@ public class AdtPlugin extends AbstractUIPlugin {
     			return;
     		}
     	}
+
+    }    
+    
+    private boolean searchForSDKInFolder(final String sdkPrefix) {
+    	
+
+    	/* Search for Android SDKs in @sdkPrefix directory*/
+    	File sdkPrefixDir = new File(sdkPrefix);
+    	if (sdkPrefixDir.exists() && sdkPrefixDir.isDirectory()) {
+    		for(File subdir:sdkPrefixDir.listFiles(new FileFilter() {
+
+				public boolean accept(File dir) {
+					return 	dir.isDirectory() &&
+							dir.canRead() && 
+							(!dir.getName().startsWith("."));
+				}
+    			
+    		})) {
+    			String path = subdir.getAbsolutePath();
+    			if (checkSdkLocationAndIdSilent(path)) {
+    	    		mOsSdkLocation = path;
+    	    		mStore.setValue(PREFS_SDK_DIR, path);
+    				return true;
+    			}
+    		}
+    		
+    		
+    	}
+    	return false;
     }
 
     /*
