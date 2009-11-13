@@ -23,8 +23,8 @@ parts {
             }
             dpad-left {
                     image arrow_left.png
-                    x 558 
-                    y 633
+                    x 557
+                    y 625 
             }
             dpad-right {
                     image arrow_right.png
@@ -37,33 +37,39 @@ parts {
                     y 647
             }
             power {
-                    image power-hmp.png
-                    x 210
-                    y 640
+                    image button.png
+                    x 196
+                    y 630
             }
 
             volume-down {
                     image button.png
-                    x 250
-                    y 634
+                    x 252
+                    y 630
             }
 
             soft-left {
                     image button.png
-                    x 285
-                    y 634
+                    x 308
+                    y 630
             }
 
             volume-up {
                     image button.png
-                    x 320
-                    y 634
+                    x 364
+                    y 630
             }
 
             back {
                     image button.png
-                    x 355
-                    y 634
+                    x 420
+                    y 630
+	    }
+
+            home {
+                    image button.png
+                    x 476
+                    y 630
 	    }
 
         }
