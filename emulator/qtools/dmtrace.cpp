@@ -13,10 +13,10 @@ const DmTrace::Header DmTrace::header = {
     0x574f4c53, kVersion, sizeof(DmTrace::Header), 0LL
 };
 
-static char *keyHeader = "*version\n" "2\n" "clock=thread-cpu\n";
-static char *keyThreadHeader = "*threads\n";
-static char *keyFunctionHeader = "*methods\n";
-static char *keyEnd = "*end\n";
+static const char *keyHeader = "*version\n" "2\n" "clock=thread-cpu\n";
+static const char *keyThreadHeader = "*threads\n";
+static const char *keyFunctionHeader = "*methods\n";
+static const char *keyEnd = "*end\n";
 
 DmTrace::DmTrace() {
     fData = NULL;
@@ -162,17 +162,23 @@ void DmTrace::parseAndAddFunction(int functionId, const char *name)
     //   method = "size"
     //   sig = "()I"
 
+    // Copy name to clazz
+    int len = strlen(name)+1;
+    char *clazz = new char[len];
+    strcpy(clazz, name);
+
     // Find the first parenthesis, the start of the signature.
-    char *paren = strchr(name, '(');
+    char *paren = strchr(clazz, '(');
 
     // If not found, then add the original name.
     if (paren == NULL) {
         addFunction(functionId, name);
+	delete[] clazz;
         return;
     }
 
     // Copy the signature
-    int len = strlen(paren) + 1;
+    len = strlen(paren) + 1;
     char *sig = new char[len];
     strcpy(sig, paren);
 
@@ -180,13 +186,14 @@ void DmTrace::parseAndAddFunction(int functionId, const char *name)
     *paren = 0;
 
     // Search for the last period, the start of the method name
-    char *dot = strrchr(name, '.');
+    char *dot = strrchr(clazz, '.');
 
     // If not found, then add the original name.
-    if (dot == NULL || dot == name) {
+    if (dot == NULL || dot == clazz) {
         delete[] sig;
         *paren = '(';
-        addFunction(functionId, name);
+        addFunction(functionId, clazz);
+        delete[] clazz;
         return;
     }
 
@@ -198,11 +205,12 @@ void DmTrace::parseAndAddFunction(int functionId, const char *name)
     // Zero the dot to delimit the class name
     *dot = 0;
 
-    addFunction(functionId, name, method, sig);
+    addFunction(functionId, clazz, method, sig);
 
     // Free the space we allocated.
     delete[] sig;
     delete[] method;
+    delete[] clazz;
 }
 
 void DmTrace::addThread(int threadId, const char *name)
