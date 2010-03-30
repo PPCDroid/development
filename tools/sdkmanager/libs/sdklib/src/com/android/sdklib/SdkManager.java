@@ -662,7 +662,7 @@ public final class SdkManager {
      * Searches for default.ini file in skin folder.
      * @param osPath The path of the skin root folder.
      */
-    private String getDefaultSkin(String osPath) {
+    private static String getDefaultSkin(String osPath) {
 	try {
         	File defaultSkinFile = new File(osPath+File.separator+"default.ini");
 		if (!defaultSkinFile.exists() || !defaultSkinFile.isFile() || !defaultSkinFile.canRead())
