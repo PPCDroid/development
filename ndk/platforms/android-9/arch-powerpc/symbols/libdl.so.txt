@@ -1,0 +1,7 @@
+dladdr
+dlclose
+dlerror
+dl_iterate_phdr
+dlopen
+dlsym
+
